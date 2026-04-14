@@ -1,32 +1,47 @@
 import 'server-only'
-import { readFile } from 'fs/promises'
-import path from 'path'
+import { sql } from './db'
 import bcrypt from 'bcryptjs'
 import type { Author, PublicAuthor } from '@/types/blog'
 
-const AUTHORS_FILE = path.join(process.cwd(), 'data', 'authors.json')
-
-async function readAuthors(): Promise<Author[]> {
-  const raw = await readFile(AUTHORS_FILE, 'utf-8')
-  return JSON.parse(raw) as Author[]
+interface AuthorRow {
+  id: string
+  email: string
+  password_hash: string
+  name: string
+  bio: string
+  avatar_url: string | null
+  created_at: string
 }
 
-export async function getAllAuthors(): Promise<PublicAuthor[]> {
-  const authors = await readAuthors()
-  return authors.map(({ passwordHash: _, ...rest }) => rest)
+function rowToAuthor(row: AuthorRow): Author {
+  return {
+    id: row.id,
+    email: row.email,
+    passwordHash: row.password_hash,
+    name: row.name,
+    bio: row.bio,
+    avatarUrl: row.avatar_url ?? undefined,
+    createdAt: new Date(row.created_at).toISOString(),
+  }
 }
 
-export async function getAuthor(id: string): Promise<PublicAuthor | null> {
-  const authors = await readAuthors()
-  const found = authors.find((a) => a.id === id)
-  if (!found) return null
-  const { passwordHash: _, ...rest } = found
+function toPublic({ passwordHash: _, ...rest }: Author): PublicAuthor {
   return rest
 }
 
+export async function getAllAuthors(): Promise<PublicAuthor[]> {
+  const rows = await sql<AuthorRow[]>`SELECT * FROM authors ORDER BY created_at`
+  return rows.map(rowToAuthor).map(toPublic)
+}
+
+export async function getAuthor(id: string): Promise<PublicAuthor | null> {
+  const rows = await sql<AuthorRow[]>`SELECT * FROM authors WHERE id = ${id} LIMIT 1`
+  return rows.length ? toPublic(rowToAuthor(rows[0])) : null
+}
+
 export async function getAuthorByEmail(email: string): Promise<Author | null> {
-  const authors = await readAuthors()
-  return authors.find((a) => a.email === email) ?? null
+  const rows = await sql<AuthorRow[]>`SELECT * FROM authors WHERE email = ${email} LIMIT 1`
+  return rows.length ? rowToAuthor(rows[0]) : null
 }
 
 export async function validatePassword(
