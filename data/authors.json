@@ -1,0 +1,20 @@
+[
+  {
+    "id": "a1b2c3d4-0001-0000-0000-000000000001",
+    "email": "admin@eunoiacenters.gr",
+    "passwordHash": "$2b$10$BeiwwzbFUYlL6a3K3jZE7.x72tHnJOCsuBpx46oezLmFEVjeh.GQm",
+    "name": "Eunoia Admin",
+    "bio": "Logotherapist and founder of Eunoia Centers. Specialising in meaning-centred therapy and existential counselling.",
+    "avatarUrl": null,
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "id": "a1b2c3d4-0002-0000-0000-000000000002",
+    "email": "alkinoosmatr@gmail.com",
+    "passwordHash": "$2b$10$wl/ncBuyfO.byuOZDw..Ieyw9ax.Wr1gWAgsqbb7uKkg4GqwtlxKa",
+    "name": "Alkinoos",
+    "bio": "Author at Eunoia Centers.",
+    "avatarUrl": null,
+    "createdAt": "2026-04-14T00:00:00.000Z"
+  }
+]

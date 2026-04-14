@@ -36,6 +36,12 @@ yarn-error.log*
 # vercel
 .vercel
 
+# user uploads
+/public/uploads/blog/
+
+# blog posts (runtime data — commit separately or use a DB in production)
+/data/posts/*.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
