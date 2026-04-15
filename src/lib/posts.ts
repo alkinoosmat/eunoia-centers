@@ -66,7 +66,7 @@ export async function createPost(post: Post): Promise<void> {
       ${post.status},
       ${sql.array(post.tags)},
       ${post.fallbackLocale ?? null},
-      ${sql.json(post.content as Parameters<typeof sql.json>[0])}
+      ${JSON.stringify(post.content)}::jsonb
     )
   `
 }
@@ -88,7 +88,7 @@ export async function updatePost(
       status         = ${updated.status},
       tags           = ${sql.array(updated.tags)},
       fallback_locale = ${updated.fallbackLocale ?? null},
-      content        = ${sql.json(updated.content as Parameters<typeof sql.json>[0])}
+      content        = ${JSON.stringify(updated.content)}::jsonb
     WHERE slug = ${slug}
   `
 }
